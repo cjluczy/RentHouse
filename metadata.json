@@ -1,0 +1,8 @@
+
+{
+  "name": "房源展示平台 (Property Display Platform)",
+  "description": "一个专业且现代化的房源管理与展示系统，支持视频看房、实名认证，专为房东与租客打造的高端视觉体验。",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
