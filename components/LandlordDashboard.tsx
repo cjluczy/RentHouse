@@ -402,10 +402,10 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
     const file = e.target.files?.[0];
     if (!file || !uploadingId) return;
     
-    // 检查文件大小，限制视频文件大小为100MB
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    // 检查文件大小，限制视频文件大小为5MB（localStorage存储限制）
+    const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      showToast('视频文件过大，请上传100MB以内的视频', 'error');
+      showToast('视频文件过大，请上传5MB以内的视频', 'error');
       setUploadingId(null);
       return;
     }
@@ -422,63 +422,65 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
     
     // 使用FileReader读取本地视频文件，用于预览
     const reader = new FileReader();
-    reader.onloadstart = () => {
-      const interval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(interval);
-            return 90;
-          }
-          return prev + 10;
-        });
-      }, 100);
-    };
+    
+    // 显示上传进度
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return 90;
+        }
+        return prev + 10;
+      });
+    }, 100);
     
     reader.onload = (event) => {
+      clearInterval(progressInterval);
       const videoUrl = event.target?.result as string;
       
-      // 创建视频元素进行预加载测试
-      const video = document.createElement('video');
-      video.src = videoUrl;
-      
-      video.onloadedmetadata = () => {
-        // 延迟执行，避免在渲染过程中更新组件状态
-        setTimeout(() => {
-          // 将视频URL存储到本地存储
-          localStorage.setItem(`video_${uploadingId}`, videoUrl);
-          
-          // 更新本地状态
-          setProperties(current => current.map(p => p.id === uploadingId ? { ...p, hasVideo: true, videoUrl } : p));
-          // 只更新hasVideo状态，不发送videoUrl，因为Data URL格式的视频文件太大
-          propertyApi.updateProperty(uploadingId, { hasVideo: true })
-            .then(() => {
-              showToast('视频上传成功，展示平台已更新');
-            })
-            .catch(error => {
-              console.error('更新视频状态失败:', error);
-              showToast('视频上传成功，但更新展示平台失败', 'error');
-            })
-            .finally(() => {
-              setUploadProgress(100);
-              setTimeout(() => {
-                setUploadingId(null);
-                setUploadProgress(0);
-              }, 500);
-            });
-        }, 0);
-      };
-      
-      video.onerror = () => {
-        console.error('视频文件加载失败，可能格式不支持');
-        showToast('视频格式不支持或文件损坏，请重试', 'error');
-        setUploadingId(null);
+      try {
+        // 尝试存储到本地存储
+        localStorage.setItem(`video_${uploadingId}`, videoUrl);
+        
+        // 更新本地状态
+        setProperties(current => current.map(p => p.id === uploadingId ? { ...p, hasVideo: true, videoUrl } : p));
+        
+        // 只更新hasVideo状态，不发送videoUrl，因为Data URL格式的视频文件太大
+        propertyApi.updateProperty(uploadingId, { hasVideo: true })
+          .then(() => {
+            showToast('视频上传成功，展示平台已更新');
+          })
+          .catch(error => {
+            console.error('更新视频状态失败:', error);
+            showToast('视频上传成功，但更新展示平台失败', 'error');
+          })
+          .finally(() => {
+            setUploadProgress(100);
+            setTimeout(() => {
+              setUploadingId(null);
+              setUploadProgress(0);
+            }, 500);
+          });
+      } catch (error) {
+        console.error('视频存储失败:', error);
+        showToast('视频上传失败，本地存储不足', 'error');
         setUploadProgress(0);
-      };
+        setUploadingId(null);
+      }
     };
     
     reader.onerror = () => {
+      clearInterval(progressInterval);
       console.error('视频文件读取失败');
       showToast('视频上传失败，请重试', 'error');
+      setUploadingId(null);
+      setUploadProgress(0);
+    };
+    
+    reader.onabort = () => {
+      clearInterval(progressInterval);
+      console.error('视频上传被中止');
+      showToast('视频上传被中止', 'error');
       setUploadingId(null);
       setUploadProgress(0);
     };
