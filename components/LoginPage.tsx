@@ -36,7 +36,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack, onLoginSuccess }) 
   return (
     <div 
       className="relative min-h-screen w-full flex items-center justify-center bg-cover bg-center overflow-hidden" 
-      style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAI8MqgmD_wbdv2TzDq1kX2Rbc-tkBIJ4jmS--fXS9TwdDtXBtmeO5VEp2eIohVsLPNH8ArpsoMuEf3-YP0OxCdOLOcWpIZ2nHXlKE2XeJEZ6KPznE3IUW9iipH0de2Pwbn6vicU6psF-bf6ZAWvPKZRUgl5Jlv9Zkanj6jWd_wE1SmO5JOFF2SvgtcpkjkM04JZA-0mMFLwhBUodUBmmC9Q82LQue_WA5Ix2XIQ002nfUsfHyGAzeLJbvGu2NgwciiPpctnWbO3g8')" }}
+      style={{ backgroundImage: "url('/assets/images/google/login-background.jpg')" }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-background-dark/95 via-[#0f172a]/80 to-background-dark/90"></div>
       <div className="relative z-10 w-full max-w-[460px] px-6">

@@ -147,21 +147,20 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
           const isReactivating = newStatus === '招租中' && (property.status === '已成交' || property.status === '已下架');
           await propertyApi.updateProperty(id, {
             status: newStatus,
-            isNew: isReactivating ? true : property.isNew
+            isNewProperty: isReactivating ? true : property.isNewProperty
           });
         }
       });
 
       await Promise.all(updatePromises);
 
-      // 更新本地状态
       setProperties(prev => prev.map(p => {
         if (selectedRows.has(p.id)) {
           const isReactivating = newStatus === '招租中' && (p.status === '已成交' || p.status === '已下架');
           return { 
             ...p, 
             status: newStatus,
-            isNew: isReactivating ? true : p.isNew
+            isNewProperty: isReactivating ? true : p.isNewProperty
           };
         }
         return p;
@@ -284,30 +283,24 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
 
     let finalProperty = { ...editingProperty };
     if (finalProperty.status === '招租中' && (originalProperty.status === '已成交' || originalProperty.status === '已下架')) {
-      finalProperty.isNew = true;
+      finalProperty.isNewProperty = true;
     }
 
     try {
-      // 准备API请求数据，避免发送Data URL以减少请求体大小
       const apiProperty = { ...finalProperty };
-      // 替换Data URL为本地路径占位符
       if (apiProperty.imageUrls && apiProperty.imageUrls.length > 0) {
         apiProperty.imageUrls = apiProperty.imageUrls.map((url, index) => {
-          // 检查是否为Data URL
           if (url.startsWith('data:')) {
-            // 替换为本地路径占位符
             return `/assets/images/${Date.now()}_${index}.jpg`;
           }
           return url;
         });
       }
-      // 避免发送videoUrl，因为Data URL格式的视频文件太大
       if (apiProperty.videoUrl && apiProperty.videoUrl.startsWith('data:')) {
         delete apiProperty.videoUrl;
         apiProperty.hasVideo = true;
       }
 
-      // 调用API更新房源
       await propertyApi.updateProperty(apiProperty.id, apiProperty);
 
       // 更新本地状态
@@ -339,25 +332,14 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
         tags: ['空调', '衣柜', '热水器', 'WiFi', '冰箱', '油烟机'],
         appointments: [],
         hasVideo: false,
-        isNew: true,
+        isNewProperty: true,
         description: DEFAULT_DESCRIPTION
       };
 
-      // 准备API请求数据，确保不包含Data URL
       const apiProperty = { ...newPropData };
-      if (apiProperty.imageUrls && apiProperty.imageUrls.length > 0) {
-        apiProperty.imageUrls = apiProperty.imageUrls.map(url => {
-          if (url.startsWith('data:')) {
-            return `/assets/images/${Date.now()}.jpg`;
-          }
-          return url;
-        });
-      }
 
-      // 调用API添加房源
       const newProp = await propertyApi.addProperty(apiProperty);
 
-      // 更新本地状态
       setProperties(prev => [newProp, ...prev]);
       setSelectedId(newProp.id);
       startEditing(newProp);
@@ -433,6 +415,17 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
         return prev + 10;
       });
     }, 100);
+    
+    reader.onloadstart = () => {
+      console.log('开始读取视频文件...');
+    };
+    
+    reader.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 90);
+        setUploadProgress(percent);
+      }
+    };
     
     reader.onload = (event) => {
       clearInterval(progressInterval);
@@ -773,6 +766,66 @@ export const LandlordDashboard: React.FC<LandlordDashboardProps> = ({
                               onChange={e => setTempConfig({...tempConfig, wechatId: e.target.value})}
                             />
                             <span className="text-[9px] text-slate-600">点击“微信预约”将复制此 ID</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-6 border-t border-white/5">
+                        <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-dashboard-blue">qr_code_2</span> 房东推广二维码 (首页展示)
+                        </h4>
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-start gap-6">
+                            <div className="relative group shrink-0">
+                              <div className="size-32 rounded-xl bg-white flex items-center justify-center border-2 border-white/10 shadow-2xl overflow-hidden">
+                                {tempConfig.qrCodeUrl ? (
+                                  <img src={tempConfig.qrCodeUrl} alt="推广二维码" className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center text-slate-300">
+                                    <span className="material-symbols-outlined text-4xl mb-1">qr_code_2</span>
+                                    <span className="text-[10px]">未设置</span>
+                                  </div>
+                                )}
+                              </div>
+                              <button 
+                                type="button"
+                                onClick={() => document.getElementById('qrCodeUpload')?.click()}
+                                className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white"
+                              >
+                                <span className="material-symbols-outlined mb-1">upload</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider">上传二维码</span>
+                              </button>
+                              <input 
+                                id="qrCodeUpload"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      setTempConfig({...tempConfig, qrCodeUrl: reader.result as string});
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div className="flex-1 space-y-3">
+                              <div className="flex flex-col gap-2">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">二维码图片 URL</label>
+                                <input 
+                                  className="bg-background-dark border border-white/10 rounded-xl p-3 text-sm text-white outline-none focus:ring-1 focus:ring-dashboard-blue transition-all" 
+                                  placeholder="输入二维码图片 URL 地址..."
+                                  value={tempConfig.qrCodeUrl || ''}
+                                  onChange={e => setTempConfig({...tempConfig, qrCodeUrl: e.target.value})}
+                                />
+                              </div>
+                              <p className="text-[9px] text-slate-600 leading-relaxed">
+                                此二维码将显示在首页房东推广区域。租客扫码后可直接联系您或查看您的房源信息。建议上传微信二维码或个人名片二维码。
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>

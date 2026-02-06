@@ -66,7 +66,7 @@ export const MOCK_PROPERTIES: Property[] = [
     layout: '1室1卫',
     tags: ['空调', '衣柜', '热水器', 'WiFi', '冰箱', '油烟机'],
     imageUrls: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuA5CEoJ-hdMk7sF0W32VkazPTrR83dgDAtcLReZTymnQcSVYVSHeBm2HNllPPOEd8Cn1-xgz9jwGTpaT68zJkrh-k3TaOgYIhD7hpSZfIW8lVPM_G8eNvUHo67pJqfhYWMR2V4r2MgwuCQsq2D3ObWoNB4oNl3gkDeIbs0KjjMw7s0a6N3Wyovwj2_D0o6Eax8G1m9fKe9dzAgeEIUEngn0QOceDpIZBBRTK4giXBEgESFfx5tKfW64o2VPy04E6gD9zF5CEMNoRr8',
+      '/assets/images/google/property-1.jpg',
       'https://picsum.photos/seed/p1/800/600',
       'https://picsum.photos/seed/p2/800/600'
     ],
@@ -89,11 +89,11 @@ export const MOCK_PROPERTIES: Property[] = [
     layout: '2室1卫',
     tags: ['空调', '衣柜', '热水器', 'WiFi', '冰箱', '油烟机', '洗衣机'],
     imageUrls: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBtdyMHvANslxZa-G_P7DjvNDRpcFsI_pFnf2pH7hC1SE8clA4m6OSffE-tkvDN21Pe8X5_NxJdv8y4N93qhuNptOm1ThVlrKOjvIplFzR31G8zv7sC-TpMye0S7IOEh23AVxuRE4i92V9GKe_DiEb_V4lMUNgrCMgMAgHNaTjK_83fdfI08snv386aXc95bMhQE6JLR57VDZTOf4dr9Ltr5XWZwc-thht5QMbIQHf2yTD5rrGYwlgOX4cY5q8F2ATiGEdXLrO92GQ',
+      '/assets/images/google/property-2.jpg',
       'https://picsum.photos/seed/p3/800/600'
     ],
     hasVideo: true,
-    isNew: true,
+    isNewProperty: true,
     status: '招租中',
     publishDate: '2024-02-15',
     appointments: [],

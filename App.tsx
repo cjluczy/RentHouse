@@ -32,6 +32,7 @@ const App: React.FC = () => {
     avatar: '/assets/images/avatar.jpg',
     phone: '13888888888',
     wechatId: 'HousePlatform_Service',
+    qrCodeUrl: '',
     password: 'admin'
   });
 
@@ -120,7 +121,7 @@ const App: React.FC = () => {
 
     switch (activeTab) {
       case FilterTab.NEW:
-        result = result.filter(p => p.isNew);
+        result = result.filter(p => p.isNewProperty);
         break;
       case FilterTab.PRICE_DROP:
         result = result.filter(p => p.price < 2500);
@@ -314,7 +315,7 @@ const App: React.FC = () => {
             )}
           </section>
           
-          <LandlordCTA onLoginClick={() => setCurrentPage('login')} />
+          <LandlordCTA onLoginClick={() => setCurrentPage('login')} landlordConfig={landlordConfig} />
         </main>
         
         <Footer />

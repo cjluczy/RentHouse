@@ -24,11 +24,11 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
         <div 
           className="flex min-h-[400px] md:min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-6 transition-all duration-700 hover:scale-[1.01]" 
           style={{ 
-            backgroundImage: `linear-gradient(to bottom, rgba(15, 15, 15, 0.3), rgba(15, 15, 15, 0.85)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBG7T2FXBz3ILQLSQBODPgKkegbicMvgM67OIl5q6I86Z4Q-O34-FqMC8KmQTpFSPQoorhbwBpMvzKHbEBeCwecayMRwgWADZmBz1qdnadxcIzIXAoLWm9wOO3PyVeA6etVDuBA6ZGCqqtceqw4h7aXsV52eRdSn43XviS5PRwRL_gy64sDqtnnbNpUnWFkOyZMO4P_9tSlG8-qh3bOTBSqAwB5Ya83pudDQqu7XGRjCASzhBEcG1iTDq4Y26Y-9LCQyu-kvZ6cnv8")` 
+            backgroundImage: `linear-gradient(to bottom, rgba(15, 15, 15, 0.3), rgba(15, 15, 15, 0.85)), url('/assets/images/google/hero-background.jpg')` 
           }}
         >
           <div className="flex flex-col gap-2 text-center max-w-2xl mb-4 animate-fadeIn">
-            <h2 className="text-white text-3xl md:text-5xl font-extrabold tracking-tight">找个舒服的家</h2>
+            <h2 className="text-white text-3xl md:text-5xl font-extrabold tracking-tight">发现理想居所，从这里开始</h2>
             <p className="text-gray-300 text-sm md:text-base font-normal opacity-90">海量真实房源，实名认证保障，视频看房更真实</p>
           </div>
           
@@ -38,7 +38,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch }) => {
                 <span className="material-symbols-outlined text-gray-400 mr-3">search</span>
                 <input 
                   className="w-full bg-transparent border-none focus:ring-0 text-gray-900 placeholder:text-gray-400 text-base py-4" 
-                  placeholder="请输入小区、地段或房源 ID"
+                  placeholder="请输入小区、地段或房源"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   onKeyDown={handleKeyDown}

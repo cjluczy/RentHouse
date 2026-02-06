@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "init-data": "node initData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +15,8 @@
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.1.6",
+    "multer": "^2.0.2"
   }
 }

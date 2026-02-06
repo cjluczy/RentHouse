@@ -33,6 +33,7 @@ export interface LandlordConfig {
   avatar: string;
   phone: string;
   wechatId: string;
+  qrCodeUrl?: string;
   password?: string;
 }
 
@@ -48,14 +49,14 @@ export interface Property {
   layout: string;
   tags: string[];
   imageUrls: string[]; 
-  videoUrl?: string; // 视频URL
+  videoUrl?: string;
   hasVideo: boolean;
-  isNew?: boolean;
+  isNewProperty?: boolean;
   status: PropertyStatus;
   publishDate: string;
   appointments: Appointment[];
   description: string;
-  coords?: [number, number]; // [latitude, longitude]
+  coords?: [number, number];
 }
 
 export enum FilterTab {

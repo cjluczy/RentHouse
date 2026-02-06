@@ -1,33 +1,46 @@
-const { MOCK_USERS } = require('../models/data');
+const User = require('../models/User');
 
 // 获取所有用户
-exports.getUsers = (req, res) => {
-  res.json(MOCK_USERS);
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: '获取用户失败', error: error.message });
+  }
 };
 
 // 添加用户
-exports.addUser = (req, res) => {
-  const newUser = {
-    id: `U${Date.now().toString().slice(-3)}`,
-    ...req.body,
-    authStatus: '已实名',
-    createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
-  };
-  MOCK_USERS.unshift(newUser);
-  res.status(201).json(newUser);
+exports.addUser = async (req, res) => {
+  try {
+    const newUser = new User({
+      id: `U${Date.now().toString().slice(-3)}`,
+      ...req.body,
+      authStatus: '已实名',
+      createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
+    });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (error) {
+    res.status(500).json({ message: '添加用户失败', error: error.message });
+  }
 };
 
 // 全局实名认证
-exports.globalAuth = (req, res) => {
-  const { name, phone } = req.body;
-  const newUser = {
-    id: `U${Date.now().toString().slice(-3)}`,
-    name,
-    phone,
-    sourceProperty: '全局平台实名认证',
-    authStatus: '已实名',
-    createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
-  };
-  MOCK_USERS.unshift(newUser);
-  res.status(201).json(newUser);
+exports.globalAuth = async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    const newUser = new User({
+      id: `U${Date.now().toString().slice(-3)}`,
+      name,
+      phone,
+      sourceProperty: '全局平台实名认证',
+      authStatus: '已实名',
+      createTime: new Date().toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-')
+    });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (error) {
+    res.status(500).json({ message: '实名认证失败', error: error.message });
+  }
 };

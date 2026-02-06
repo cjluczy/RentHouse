@@ -29,7 +29,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, onSelect, 
               视频看房
             </div>
           )}
-          {property.isNew && (
+          {property.isNewProperty && (
             <div className="flex items-center gap-1 bg-emerald-500/90 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-lg uppercase tracking-tighter">
               <span className="material-symbols-outlined text-[12px] fill-1">new_releases</span>
               新上架
